@@ -18,6 +18,8 @@ class AuthRepository implements AuthRepositoryInterface
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
+            'cpf' => $data['cpf'],
+            'phone' => $data['phone'],
             'password' => Hash::make($data['password']),
         ]);
     }
