@@ -60,3 +60,8 @@ php artisan migrate
 ```bash
 php artisan serve
 ```
+
+### 8. Rodando testes unitários
+```bash
+php artisan test
+```
