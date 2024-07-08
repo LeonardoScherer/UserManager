@@ -7,6 +7,7 @@ use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\Services\UserService;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class UserServiceTest extends TestCase
 {
@@ -14,10 +15,16 @@ class UserServiceTest extends TestCase
 
     protected $userService;
     protected $userRepositoryMock;
+    protected $user;
 
     protected function setUp(): void
     {
         parent::setUp();
+
+        $this->user = User::factory()->create();
+        $token = auth()->login($this->user);
+
+        $this->withHeaders(['Authorization' => 'Bearer ' . $token]);
 
         $this->userRepositoryMock = $this->createMock(UserRepositoryInterface::class);
 
@@ -62,12 +69,19 @@ class UserServiceTest extends TestCase
         ];
 
         $this->userRepositoryMock->expects($this->once())
-        ->method('update')
-        ->with($user->id)
-        ->willReturn(true);
+            ->method('update')
+            ->with($user->id)
+            ->willReturn(true);
 
         $result = $this->userService->update($user->id, $userData);
 
         $this->assertTrue($result);
+    }
+
+    public function test_show_user()
+    {
+        $response = $this->getJson('/api/user');
+
+        $response->assertStatus(200);
     }
 }
