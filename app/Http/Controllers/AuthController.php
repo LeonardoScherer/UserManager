@@ -16,6 +16,19 @@ class AuthController extends Controller
         $this->authService = $authService;
     }
 
+    public function login(Request $request)
+    {
+        $credentials = $request->only('email', 'password');
+        $token = $this->authService->login($credentials);
+
+        if (!$token) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        return response()->json(['token' => $token]);
+    }
+
+
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
