@@ -23,7 +23,7 @@ Este sistema é uma aplicação web desenvolvida para gerenciar usuários. Ele p
 
 ### 1. Clonar o repositório
 ```bash
-git@github.com:LeonardoScherer/UserManager.git
+git clone git@github.com:LeonardoScherer/UserManager.git
 
 cd UserManager
 ```
