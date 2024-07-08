@@ -14,4 +14,19 @@ class UserRepository implements UserRepositoryInterface
         }
         return false;
     }
+
+    public function update(int $id, array $data): bool
+    {
+        $user = User::find($id);
+        if (!$user) {
+            return false;
+        }
+
+        return $user->update($data);
+    }
+
+    public function find(int $id): ?User
+    {
+        return User::find($id);
+    }
 }

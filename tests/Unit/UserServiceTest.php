@@ -20,6 +20,7 @@ class UserServiceTest extends TestCase
         parent::setUp();
 
         $this->userRepositoryMock = $this->createMock(UserRepositoryInterface::class);
+
         $this->userService = new UserService($this->userRepositoryMock);
     }
 
@@ -49,5 +50,24 @@ class UserServiceTest extends TestCase
         $result = $this->userService->softDeleteUser($userId);
 
         $this->assertFalse($result);
+    }
+
+    public function test_update_user()
+    {
+        $user = User::factory()->create();
+        $userData = [
+            'name' => 'Updated Name',
+            'email' => 'teste@teste.com',
+            'password' => 'aA123456&'
+        ];
+
+        $this->userRepositoryMock->expects($this->once())
+        ->method('update')
+        ->with($user->id)
+        ->willReturn(true);
+
+        $result = $this->userService->update($user->id, $userData);
+
+        $this->assertTrue($result);
     }
 }

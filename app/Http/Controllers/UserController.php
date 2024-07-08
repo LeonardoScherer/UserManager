@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Services\Interfaces\UserServiceInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -24,6 +25,34 @@ class UserController extends Controller
             return response()->json(['message' => 'Usuário deletado com sucesso'], 200);
         } else {
             return response()->json(['message' => 'Falha ao deletar usuário'], 500);
+        }
+    }
+
+    public function update(Request $request, $id)
+    {
+        if (Auth::id() != $id) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $id,
+            'phone' => 'required|string|max:20|unique:users,phone,' . $id,
+            'cpf' => 'required|string|regex:/^[0-9]{3}\.?[0-9]{3}\.?[0-9]{3}\-?[0-9]{2}$/|unique:users,cpf,' . $id,
+            'password' => 'nullable|string|min:6|confirmed',
+        ]);
+
+        try {
+            $result = $this->userService->update($id, $validatedData);
+
+            if ($result) {
+                $user = $this->userService->getUserById($id);
+                return response()->json( $user, 200);
+            } else {
+                return response()->json(['error' => 'Erro ao atualizar usuário.'], 500);
+            }
+        } catch (\Throwable $th) {
+            return response()->json(['error' => 'Erro ao atualizar usuário.'], 500);
         }
     }
 }

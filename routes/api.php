@@ -24,4 +24,5 @@ Route::middleware('auth:api')->group(function () {
 
     Route::post('/address', [AddressController::class, 'store']);
     Route::delete('/user/delete', [UserController::class, 'destroy']);
+    Route::put('/user/{id}', [UserController::class, 'update']);
 });
